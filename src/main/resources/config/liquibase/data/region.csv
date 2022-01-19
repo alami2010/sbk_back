@@ -1,0 +1,20 @@
+id;name;code
+1;Guadeloupe;01
+2;Martinique;02
+3;Guyane;03
+4;La Réunion;04
+5;Mayotte;06
+6;Île-de-France;11
+7;Centre-Val de Loire;24
+8;Bourgogne-Franche-Comté;27
+9;Normandie;28
+10;Hauts-de-France;32
+11;Grand Est;44
+12;Pays de la Loire;52
+13;Bretagne;53
+14;Nouvelle-Aquitaine;75
+15;Occitanie;76
+16;Auvergne-Rhône-Alpes;84
+17;Provence-Alpes-Côte d'Azur;93
+18;Corse;94
+19;Collectivités d'Outre-Mer;COM

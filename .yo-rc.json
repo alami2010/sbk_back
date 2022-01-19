@@ -42,6 +42,8 @@
     "clientThemeVariant": "",
     "withAdminUi": true,
     "enableGradleEnterprise": false,
-    "languages": ["en", "fr"]
+    "languages": ["en", "fr"],
+    "lastLiquibaseTimestamp": 1638556579000,
+    "entities": ["Region", "Departement", "City", "Event"]
   }
 }

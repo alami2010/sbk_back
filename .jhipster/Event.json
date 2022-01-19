@@ -1,0 +1,81 @@
+{
+  "fields": [
+    {
+      "fieldName": "title",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "startHour",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "endHour",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "period",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "isLive",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "country",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "addLat",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "addLong",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "image",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "link",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceClass",
+  "dto": "no",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "infinite-scroll",
+  "name": "Event",
+  "changelogDate": "20211203183619"
+}

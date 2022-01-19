@@ -1,0 +1,32 @@
+{
+  "fields": [
+    {
+      "fieldName": "departementCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "zipCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gpsLat",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "gpsLng",
+      "fieldType": "Double"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceClass",
+  "dto": "no",
+  "jpaMetamodelFiltering": false,
+  "readOnly": true,
+  "pagination": "no",
+  "name": "City",
+  "changelogDate": "20211121202109"
+}
