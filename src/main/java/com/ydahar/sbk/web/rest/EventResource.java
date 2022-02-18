@@ -6,26 +6,28 @@ import com.ydahar.sbk.service.EventQueryService;
 import com.ydahar.sbk.service.EventService;
 import com.ydahar.sbk.service.criteria.EventCriteria;
 import com.ydahar.sbk.web.rest.errors.BadRequestAlertException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing {@link com.ydahar.sbk.domain.Event}.
@@ -76,7 +78,7 @@ public class EventResource {
     /**
      * {@code PUT  /events/:id} : Updates an existing event.
      *
-     * @param id the id of the event to save.
+     * @param id    the id of the event to save.
      * @param event the event to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated event,
      * or with status {@code 400 (Bad Request)} if the event is not valid,
@@ -108,7 +110,7 @@ public class EventResource {
     /**
      * {@code PATCH  /events/:id} : Partial updates given fields of an existing event, field will ignore if it is null
      *
-     * @param id the id of the event to save.
+     * @param id    the id of the event to save.
      * @param event the event to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated event,
      * or with status {@code 400 (Bad Request)} if the event is not valid,
@@ -116,7 +118,7 @@ public class EventResource {
      * or with status {@code 500 (Internal Server Error)} if the event couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/events/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/events/{id}", consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<Event> partialUpdateEvent(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Event event
@@ -153,7 +155,44 @@ public class EventResource {
         log.debug("REST request to get Events by criteria: {}", criteria);
         Page<Event> page = eventQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+
+        List<Event> content = page.getContent();
+
+        if (criteria.getAddLat() != null && criteria.getAddLong() != null) {
+            content = content.stream().
+                map(event -> {
+                        event.setDistance(distance(event.getAddLat(), event.getAddLong(), criteria.getAddLat(), criteria.getAddLong()));
+                        return event;
+                    }
+                )
+                .sorted(Comparator.comparing(Event::getDistance))
+                .collect(Collectors.toList());
+
+        }
+
+        return ResponseEntity.ok().headers(headers).body(content);
+    }
+
+
+    private double distance(Double lat1, Double lon1, Double lat2, Double lon2) {
+        // haversine great circle distance approximation, returns meters
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
+            + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+            * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60; // 60 nautical miles per degree of seperation
+        dist = dist * 1852; // 1852 meters per nautical mile
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
     /**
@@ -180,6 +219,7 @@ public class EventResource {
         Optional<Event> event = eventService.findOne(id);
         return ResponseUtil.wrapOrNotFound(event);
     }
+
 
     /**
      * {@code DELETE  /events/:id} : delete the "id" event.

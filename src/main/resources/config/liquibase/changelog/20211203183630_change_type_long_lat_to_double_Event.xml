@@ -7,10 +7,14 @@
     <!--
         Added the entity Event.
     -->
-    <changeSet id="20211203183620-1" author="jhipster">
+    <changeSet id="20211203183630-1" author="jhipster">
         <modifyDataType
-            columnName="description"
-            newDataType="text"
+            columnName="add_lat"
+            newDataType="double"
+            tableName="event"/>
+        <modifyDataType
+            columnName="add_long"
+            newDataType="double"
             tableName="event"/>
     </changeSet>
 

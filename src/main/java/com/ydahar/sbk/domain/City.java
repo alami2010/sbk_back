@@ -1,7 +1,9 @@
 package com.ydahar.sbk.domain;
 
-import java.io.Serializable;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A City.
@@ -31,6 +33,18 @@ public class City implements Serializable {
 
     @Column(name = "gps_lng")
     private Double gpsLng;
+
+    @OneToMany(mappedBy="city")
+    private List<Event> events = new ArrayList();
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

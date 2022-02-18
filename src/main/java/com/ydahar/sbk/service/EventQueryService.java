@@ -1,11 +1,10 @@
 package com.ydahar.sbk.service;
 
-import com.ydahar.sbk.domain.*; // for static metamodels
+import com.ydahar.sbk.domain.City;
 import com.ydahar.sbk.domain.Event;
+import com.ydahar.sbk.domain.Event_;
 import com.ydahar.sbk.repository.EventRepository;
 import com.ydahar.sbk.service.criteria.EventCriteria;
-import java.util.List;
-import javax.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,6 +13,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
+
+import javax.persistence.criteria.*;
+import java.util.List;
 
 /**
  * Service for executing complex queries for {@link Event} entities in the database.
@@ -70,6 +72,8 @@ public class EventQueryService extends QueryService<Event> {
         return eventRepository.count(specification);
     }
 
+
+
     /**
      * Function to convert {@link EventCriteria} to a {@link Specification}
      * @param criteria The object which holds all the filters, which the entities should match.
@@ -79,64 +83,56 @@ public class EventQueryService extends QueryService<Event> {
         Specification<Event> specification = Specification.where(null);
         if (criteria != null) {
             // This has to be called first, because the distinct method returns null
-            if (criteria.getDistinct() != null) {
-                specification = specification.and(distinct(criteria.getDistinct()));
-            }
-            if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), Event_.id));
-            }
-            if (criteria.getTitle() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getTitle(), Event_.title));
-            }
+
             if (criteria.getDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getDate(), Event_.date));
-            }
-            if (criteria.getStartHour() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getStartHour(), Event_.startHour));
-            }
-            if (criteria.getEndHour() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getEndHour(), Event_.endHour));
-            }
-            if (criteria.getPeriod() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getPeriod(), Event_.period));
-            }
-            if (criteria.getPrice() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getPrice(), Event_.price));
             }
             if (criteria.getType() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getType(), Event_.type));
             }
-            if (criteria.getIsLive() != null) {
-                specification = specification.and(buildSpecification(criteria.getIsLive(), Event_.isLive));
-            }
             if (criteria.getCountry() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getCountry(), Event_.country));
             }
-            if (criteria.getAddress() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAddress(), Event_.address));
+            if (criteria.getZipCode() != null) {
+                specification = specification.and( jointCity(criteria.getZipCode()));
             }
-            if (criteria.getAddLat() != null) {
+            if (criteria.getDepartementCode() != null) {
+                specification = specification.and( joinDepartement(criteria.getDepartementCode()));
+            }
+           /* if (criteria.getAddLat() != null && criteria.getAddLong() != null) {
+                specification = specification.and( buildStringSpecification(criteria.getAddLat(),criteria.getAddLong(),48.936741,2.055970));
+            }*/
+
+
+            /*if (criteria.getAddLat() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getAddLat(), Event_.addLat));
             }
             if (criteria.getAddLong() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getAddLong(), Event_.addLong));
-            }
-            if (criteria.getImage() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getImage(), Event_.image));
-            }
-            if (criteria.getLink() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getLink(), Event_.link));
-            }
-            if (criteria.getPhone() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getPhone(), Event_.phone));
-            }
-            if (criteria.getEmail() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getEmail(), Event_.email));
-            }
-            if (criteria.getDescription() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getDescription(), Event_.description));
-            }
+            }*/
         }
         return specification;
     }
+
+
+
+    public static Specification<Event> jointCity(String zipCode) {
+        return new Specification<Event>() {
+            public Predicate toPredicate(Root<Event> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Join<Event,City> city = root.join("city");
+                 return cb.equal(city.get("zipCode"), zipCode);
+            }
+        };
+    }
+
+    public static Specification<Event> joinDepartement(String departementCode) {
+        return new Specification<Event>() {
+            public Predicate toPredicate(Root<Event> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Join<Event,City> city = root.join("city");
+                return cb.equal(city.get("departementCode"), departementCode);
+            }
+        };
+    }
+
+
 }
