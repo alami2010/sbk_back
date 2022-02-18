@@ -1,9 +1,9 @@
 package com.ydahar.sbk.domain;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 
 /**
  * A Event.
@@ -51,10 +51,10 @@ public class Event implements Serializable {
     private String address;
 
     @Column(name = "add_lat")
-    private String addLat;
+    private Double addLat;
 
     @Column(name = "add_long")
-    private String addLong;
+    private Double addLong;
 
     @Column(name = "image")
     private String image;
@@ -70,6 +70,32 @@ public class Event implements Serializable {
 
     @Column(name = "description")
     private String description;
+
+    @Transient
+    private Double distance;
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    @ManyToOne
+    @JoinColumn(name="id_city",referencedColumnName="id", nullable=false)
+    private City city;
+
+
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -216,29 +242,29 @@ public class Event implements Serializable {
         this.address = address;
     }
 
-    public String getAddLat() {
+    public Double getAddLat() {
         return this.addLat;
     }
 
-    public Event addLat(String addLat) {
+    public Event addLat(Double addLat) {
         this.setAddLat(addLat);
         return this;
     }
 
-    public void setAddLat(String addLat) {
+    public void setAddLat(Double addLat) {
         this.addLat = addLat;
     }
 
-    public String getAddLong() {
+    public Double getAddLong() {
         return this.addLong;
     }
 
-    public Event addLong(String addLong) {
+    public Event addLong(Double addLong) {
         this.setAddLong(addLong);
         return this;
     }
 
-    public void setAddLong(String addLong) {
+    public void setAddLong(Double addLong) {
         this.addLong = addLong;
     }
 

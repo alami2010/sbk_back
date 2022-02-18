@@ -32,9 +32,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://sbk-db.c3rozcos4hgk.us-east-2.rds.amazonaws.com:3306/sbk?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: admin
-    password: sbk_2010
+    url: jdbc:mysql://127.0.0.1:3306/sbk
+    username: root
+    password:
     hikari:
       poolName: Hikari
       auto-commit: false
