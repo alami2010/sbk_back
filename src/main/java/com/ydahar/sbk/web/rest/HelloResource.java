@@ -26,6 +26,6 @@ public class HelloResource {
     @GetMapping("/")
     public String hello() {
         log.debug("REST request to hello world");
-        return "hello world";
+        return "hello world youssef";
     }
 }
