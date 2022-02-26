@@ -68,6 +68,7 @@ public class Event implements Serializable {
     @Column(name = "email")
     private String email;
 
+    @Lob
     @Column(name = "description")
     private String description;
 
