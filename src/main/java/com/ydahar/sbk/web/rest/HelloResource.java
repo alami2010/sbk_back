@@ -30,7 +30,7 @@ public class HelloResource {
         log.debug("REST request to hello world");
         Map<String, String> map = new HashMap<>();
         map.put("health","OK");
-        map.put("app","SBK");
+        map.put("app","SBK Go dance");
         return map;
     }
 }
