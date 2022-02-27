@@ -16,7 +16,8 @@ phases:
   post_build:
     commands:
       - echo post_build
+      - mv target/sbk-0.0.2.jar app.jar
 
 artifacts:
   files:
-    - target/sbk-0.0.2.jar
+    - app.jar
