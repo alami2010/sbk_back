@@ -36,7 +36,7 @@ public class CityResource {
     }
 
     /**
-     * {@code GET  /cities} : get all the cities.
+     * {@code GET  /cities} : get all the cities..
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of cities in body.
      */
