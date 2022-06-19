@@ -1,14 +1,17 @@
 package com.ydahar.sbk.service;
 
+import com.ydahar.sbk.domain.City;
 import com.ydahar.sbk.domain.Event;
+import com.ydahar.sbk.repository.CityRepository;
 import com.ydahar.sbk.repository.EventRepository;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link Event}.
@@ -21,8 +24,13 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    public EventService(EventRepository eventRepository) {
+    private final CityRepository cityRepository;
+
+
+
+    public EventService(EventRepository eventRepository, CityRepository cityRepository) {
         this.eventRepository = eventRepository;
+        this.cityRepository = cityRepository;
     }
 
     /**
@@ -31,9 +39,17 @@ public class EventService {
      * @param event the entity to save.
      * @return the persisted entity.
      */
-    public Event save(Event event) {
+    public Event save(Event event) throws Exception {
         log.debug("Request to save Event : {}", event);
-        return eventRepository.save(event);
+        if (event.getCityId()!=null){
+            Optional<City> city =  cityRepository.findById(event.getCityId());
+            if (city.isPresent()){
+                event.setCity(city.get());
+                return  eventRepository.save(event);
+            }
+        }
+        log.error("ZipCode is not valid : {}", event.getCityId());
+        throw new Exception("ZipCode is not valid "+event.getCityId());
     }
 
     /**

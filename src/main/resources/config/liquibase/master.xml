@@ -22,6 +22,7 @@
     <include file="config/liquibase/changelog/20211203183620_change_description_type_entity_Event.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20211203183630_change_type_long_lat_to_double_Event.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20211203183640_change_type_id_city.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211203183641_add_name_event_field.xml" relativeToChangelogFile="false"/>
 
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
