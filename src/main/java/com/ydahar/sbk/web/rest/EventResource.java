@@ -235,5 +235,40 @@ public class EventResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+
+    }
+
+    // create a new webserivce
+    private void generateAdress() {
+        String locationAddress ="26 résidence les nouveaux horizons, 78990 elancourt";
+        String locationAddres = locationAddress.replaceAll(" ", "%20");
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="+locationAddres+"&language=en&key="+"AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
+        System.out.println(url);
+        /// spring rest
+        // https://www.tutorialspoint.com/spring_boot/spring_boot_rest_template.htm
+
+        /*
+
+             @Autowired
+             RestTemplate restTemplate;
+
+            GeocodeResult result = restTemplate.getForObject(URL, GeocodeResult.class, params);
+
+       // code of result class     https://rapidapi.com/blog/google-maps-api-java/
+
+
+       return object
+         GoogleSerchResult
+              Adresse ==> locationAddress
+              formatted_address in json
+              postal_code  in json
+              latitude in json
+              longitude  in json
+
+
+         */
+
+
+
     }
 }
