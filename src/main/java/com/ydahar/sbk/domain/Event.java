@@ -1,5 +1,8 @@
 package com.ydahar.sbk.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,6 +25,14 @@ public class Event implements Serializable {
     @NotNull
     @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "name", nullable = true)
+    private String name;
+
+    @JsonSerialize
+    @JsonDeserialize
+    @Transient
+    private Long cityId;
 
     @Column(name = "date")
     private LocalDate date;
@@ -111,6 +122,22 @@ public class Event implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
     }
 
     public String getTitle() {
