@@ -125,7 +125,7 @@ public class EventResource {
     ) throws URISyntaxException {
         log.debug("REST request to partial update Event to partially : {}, {}", id, event);
         if (event.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Invalid this id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, event.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
