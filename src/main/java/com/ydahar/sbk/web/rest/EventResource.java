@@ -132,7 +132,7 @@ public class EventResource {
         }
 
         if (!eventRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            throw new BadRequestAlertException("Entity noot found", ENTITY_NAME, "idnotfound");
         }
 
         Optional<Event> result = eventService.partialUpdate(event);
