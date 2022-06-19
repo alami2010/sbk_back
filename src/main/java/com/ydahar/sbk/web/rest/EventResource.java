@@ -123,7 +123,7 @@ public class EventResource {
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Event event
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Event partially : {}, {}", id, event);
+        log.debug("REST request to partial update Event to partially : {}, {}", id, event);
         if (event.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
