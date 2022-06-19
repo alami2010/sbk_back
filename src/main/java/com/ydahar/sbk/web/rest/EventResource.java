@@ -242,7 +242,7 @@ public class EventResource {
     private void generateAdress() {
         String locationAddress ="26 résidence les nouveaux horizons, 78990 elancourt";
         String locationAddres = locationAddress.replaceAll(" ", "%20");
-        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="+locationAddres+"&language=en&key="+"AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="+locationAddres+"&language=en&key="+"API_KEY";
         System.out.println(url);
         /// spring rest
         // https://www.tutorialspoint.com/spring_boot/spring_boot_rest_template.htm
