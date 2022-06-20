@@ -1,5 +1,8 @@
 package com.ydahar.sbk.web.rest;
 
+import com.ydahar.sbk.GeocodeLibrary.AddressComponent;
+import com.ydahar.sbk.GeocodeLibrary.GeoCodeResponse;
+import com.ydahar.sbk.GeocodeLibrary.GeocodeResult;
 import com.ydahar.sbk.domain.Event;
 import com.ydahar.sbk.repository.EventRepository;
 import com.ydahar.sbk.service.EventQueryService;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -21,6 +25,7 @@ import tech.jhipster.web.util.ResponseUtil;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
@@ -36,6 +41,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class EventResource {
 
+
+    private final RestTemplate restTemplate;
+
     private final Logger log = LoggerFactory.getLogger(EventResource.class);
 
     private static final String ENTITY_NAME = "event";
@@ -49,7 +57,8 @@ public class EventResource {
 
     private final EventQueryService eventQueryService;
 
-    public EventResource(EventService eventService, EventRepository eventRepository, EventQueryService eventQueryService) {
+    public EventResource(RestTemplate restTemplate, EventService eventService, EventRepository eventRepository, EventQueryService eventQueryService) {
+        this.restTemplate = restTemplate;
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.eventQueryService = eventQueryService;
@@ -238,37 +247,32 @@ public class EventResource {
 
     }
 
-    // create a new webserivce
-    private void generateAdress() {
-        String locationAddress ="26 résidence les nouveaux horizons, 78990 elancourt";
-        String locationAddres = locationAddress.replaceAll(" ", "%20");
-        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="+locationAddres+"&language=en&key="+"AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
+
+    @RequestMapping(path = "/geocode", method = RequestMethod.GET)
+    public GeoCodeResponse getGeocode(@RequestParam(name = "address") String address) throws IOException {
+        String locationAddress = address.replaceAll(" ", "%20");
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + locationAddress + "&language=en&key=" + "AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
+
+        GeocodeResult result = restTemplate.getForObject(url, GeocodeResult.class);
         System.out.println(url);
-        /// spring rest
-        // https://www.tutorialspoint.com/spring_boot/spring_boot_rest_template.htm
 
-        /*
-
-             @Autowired
-             RestTemplate restTemplate;
-
-            GeocodeResult result = restTemplate.getForObject(URL, GeocodeResult.class, params);
-
-       // code of result class     https://rapidapi.com/blog/google-maps-api-java/
-
-
-       return object
-         GoogleSerchResult
-              Adresse ==> locationAddress
-              formatted_address in json
-              postal_code  in json
-              latitude in json
-              longitude  in json
-
-
-         */
-
-
+        return mappingToGeoCodeRespons(result,address);
 
     }
+
+    private GeoCodeResponse mappingToGeoCodeRespons(GeocodeResult result,String address) {
+        GeoCodeResponse geoCodeResponse = new GeoCodeResponse();
+        geoCodeResponse.setStatus(result.getStatus());
+        Optional<AddressComponent> optionalAddressComponent = result.getResults().get(0).getAddressComponents().stream()
+            .filter(addressComponent -> addressComponent.getTypes().contains("postal_code")).findFirst();
+        if (optionalAddressComponent.isPresent()) {
+            geoCodeResponse.setPostalCode(optionalAddressComponent.get().getLongName());
+        }
+        geoCodeResponse.setLatitude(result.getResults().get(0).getGeometry().getGeocodeLocation().getLatitude());
+        geoCodeResponse.setLongitude(result.getResults().get(0).getGeometry().getGeocodeLocation().getLongitude());
+        geoCodeResponse.setAddress(address);
+        geoCodeResponse.setFormattedAddress(result.getResults().get(0).getFormattedAddress());
+        return geoCodeResponse;
+    }
+
 }
