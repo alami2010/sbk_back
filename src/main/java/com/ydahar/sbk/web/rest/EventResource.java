@@ -83,8 +83,8 @@ public class EventResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/events")
-    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event)
-        throws URISyntaxException {
+    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) throws Exception {
+
         log.debug("REST request to save Event : {}", event);
         if (event.getId() != null) {
             throw new BadRequestAlertException("A new event cannot already have an ID", ENTITY_NAME,
@@ -109,10 +109,9 @@ public class EventResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/events/{id}")
-    public ResponseEntity<Event> updateEvent(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Event event)
-        throws URISyntaxException {
+    public ResponseEntity<Event> updateEvent(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Event event)
+        throws Exception {
+
         log.debug("REST request to update Event : {}, {}", id, event);
         if (event.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
