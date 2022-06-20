@@ -276,7 +276,7 @@ public class EventResource {
     public GeoCodeResponse getGeocode(@RequestParam(name = "address") String address)
         throws Exception {
         String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="
-            + address + "&language=fr&key=" + "AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
+            + address + "&language=fr&key=" + "API";
 
         GeocodeResult result = restTemplate.getForObject(url, GeocodeResult.class);
         System.out.println(url);
