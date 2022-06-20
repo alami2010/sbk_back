@@ -9,22 +9,6 @@ import com.ydahar.sbk.service.EventQueryService;
 import com.ydahar.sbk.service.EventService;
 import com.ydahar.sbk.service.criteria.EventCriteria;
 import com.ydahar.sbk.web.rest.errors.BadRequestAlertException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.ResponseUtil;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,6 +17,31 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link com.ydahar.sbk.domain.Event}.
@@ -57,7 +66,8 @@ public class EventResource {
 
     private final EventQueryService eventQueryService;
 
-    public EventResource(RestTemplate restTemplate, EventService eventService, EventRepository eventRepository, EventQueryService eventQueryService) {
+    public EventResource(RestTemplate restTemplate, EventService eventService,
+        EventRepository eventRepository, EventQueryService eventQueryService) {
         this.restTemplate = restTemplate;
         this.eventService = eventService;
         this.eventRepository = eventRepository;
@@ -68,19 +78,23 @@ public class EventResource {
      * {@code POST  /events} : Create a new event.
      *
      * @param event the event to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new event, or with status {@code 400 (Bad Request)} if the event has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new
+     * event, or with status {@code 400 (Bad Request)} if the event has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/events")
-    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) throws URISyntaxException {
+    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event)
+        throws URISyntaxException {
         log.debug("REST request to save Event : {}", event);
         if (event.getId() != null) {
-            throw new BadRequestAlertException("A new event cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new event cannot already have an ID", ENTITY_NAME,
+                "idexists");
         }
         Event result = eventService.save(event);
         return ResponseEntity
             .created(new URI("/api/events/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME,
+                result.getId().toString()))
             .body(result);
     }
 
@@ -89,13 +103,15 @@ public class EventResource {
      *
      * @param id    the id of the event to save.
      * @param event the event to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated event,
-     * or with status {@code 400 (Bad Request)} if the event is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the event couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated
+     * event, or with status {@code 400 (Bad Request)} if the event is not valid, or with status
+     * {@code 500 (Internal Server Error)} if the event couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/events/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Event event)
+    public ResponseEntity<Event> updateEvent(
+        @PathVariable(value = "id", required = false) final Long id,
+        @Valid @RequestBody Event event)
         throws URISyntaxException {
         log.debug("REST request to update Event : {}, {}", id, event);
         if (event.getId() == null) {
@@ -112,22 +128,25 @@ public class EventResource {
         Event result = eventService.save(event);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, event.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
+                event.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PATCH  /events/:id} : Partial updates given fields of an existing event, field will ignore if it is null
+     * {@code PATCH  /events/:id} : Partial updates given fields of an existing event, field will
+     * ignore if it is null
      *
      * @param id    the id of the event to save.
      * @param event the event to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated event,
-     * or with status {@code 400 (Bad Request)} if the event is not valid,
-     * or with status {@code 404 (Not Found)} if the event is not found,
-     * or with status {@code 500 (Internal Server Error)} if the event couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated
+     * event, or with status {@code 400 (Bad Request)} if the event is not valid, or with status
+     * {@code 404 (Not Found)} if the event is not found, or with status {@code 500 (Internal Server
+     * Error)} if the event couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/events/{id}", consumes = {"application/json", "application/merge-patch+json"})
+    @PatchMapping(value = "/events/{id}", consumes = {"application/json",
+        "application/merge-patch+json"})
     public ResponseEntity<Event> partialUpdateEvent(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Event event
@@ -148,7 +167,8 @@ public class EventResource {
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, event.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
+                event.getId().toString())
         );
     }
 
@@ -157,26 +177,29 @@ public class EventResource {
      *
      * @param pageable the pagination information.
      * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of events in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of events in
+     * body.
      */
     @GetMapping("/events")
     public ResponseEntity<List<Event>> getAllEvents(EventCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Events by criteria: {}", criteria);
         Page<Event> page = eventQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        HttpHeaders headers = PaginationUtil
+            .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
 
         List<Event> content = page.getContent();
 
         if (criteria.getAddLat() != null && criteria.getAddLong() != null) {
             content = content.stream().
                 map(event -> {
-                        event.setDistance(distance(event.getAddLat(), event.getAddLong(), criteria.getAddLat(), criteria.getAddLong()));
+                        event.setDistance(
+                            distance(event.getAddLat(), event.getAddLong(), criteria.getAddLat(),
+                                criteria.getAddLong()));
                         return event;
                     }
                 )
                 .sorted(Comparator.comparing(Event::getDistance))
                 .collect(Collectors.toList());
-
         }
 
         return ResponseEntity.ok().headers(headers).body(content);
@@ -220,7 +243,8 @@ public class EventResource {
      * {@code GET  /events/:id} : get the "id" event.
      *
      * @param id the id of the event to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the event, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the event, or
+     * with status {@code 404 (Not Found)}.
      */
     @GetMapping("/events/{id}")
     public ResponseEntity<Event> getEvent(@PathVariable Long id) {
@@ -242,37 +266,45 @@ public class EventResource {
         eventService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil
+                .createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
-
     }
 
 
     @RequestMapping(path = "/geocode", method = RequestMethod.GET)
-    public GeoCodeResponse getGeocode(@RequestParam(name = "address") String address) throws IOException {
-        String locationAddress = address.replaceAll(" ", "%20");
-        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + locationAddress + "&language=en&key=" + "AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
+    public GeoCodeResponse getGeocode(@RequestParam(name = "address") String address)
+        throws Exception {
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="
+            + address + "&language=fr&key=" + "AIzaSyC4kHO-Ec8wdvdrcQIQEJeRBQxwCJtbegs";
 
         GeocodeResult result = restTemplate.getForObject(url, GeocodeResult.class);
         System.out.println(url);
+        if (result == null) {
+            throw new Exception("Cant get the geo address");
+        }
 
-        return mappingToGeoCodeRespons(result,address);
-
+        return mappingToGeoCodeResponse(result, address);
     }
 
-    private GeoCodeResponse mappingToGeoCodeRespons(GeocodeResult result,String address) {
+    private GeoCodeResponse mappingToGeoCodeResponse(GeocodeResult result, String address) {
         GeoCodeResponse geoCodeResponse = new GeoCodeResponse();
         geoCodeResponse.setStatus(result.getStatus());
-        Optional<AddressComponent> optionalAddressComponent = result.getResults().get(0).getAddressComponents().stream()
-            .filter(addressComponent -> addressComponent.getTypes().contains("postal_code")).findFirst();
-        if (optionalAddressComponent.isPresent()) {
-            geoCodeResponse.setPostalCode(optionalAddressComponent.get().getLongName());
+        if (result.getResults().size() > 0) {
+            Optional<AddressComponent> optionalAddressComponent = result.getResults().get(0)
+                .getAddressComponents().stream()
+                .filter(addressComponent -> addressComponent.getTypes().contains("postal_code"))
+                .findFirst();
+            optionalAddressComponent.ifPresent(
+                addressComponent -> geoCodeResponse.setPostalCode(addressComponent.getLongName()));
+            geoCodeResponse.setLatitude(
+                result.getResults().get(0).getGeometry().getGeocodeLocation().getLatitude());
+            geoCodeResponse.setLongitude(
+                result.getResults().get(0).getGeometry().getGeocodeLocation().getLongitude());
+            geoCodeResponse.setAddress(address);
+            geoCodeResponse.setFormattedAddress(result.getResults().get(0).getFormattedAddress());
         }
-        geoCodeResponse.setLatitude(result.getResults().get(0).getGeometry().getGeocodeLocation().getLatitude());
-        geoCodeResponse.setLongitude(result.getResults().get(0).getGeometry().getGeocodeLocation().getLongitude());
-        geoCodeResponse.setAddress(address);
-        geoCodeResponse.setFormattedAddress(result.getResults().get(0).getFormattedAddress());
+
         return geoCodeResponse;
     }
-
 }
